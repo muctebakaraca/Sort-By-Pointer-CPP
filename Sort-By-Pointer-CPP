@@ -1,0 +1,121 @@
+/*
+    Program Name : Assign by Pointer
+    Author       : Mucteba Karaca
+    Date Written : 04/20/2024
+    Program Purpose : 
+        The purpose of this program is to demonstrate understanding of pointers and sorting by using them to define
+        separate pointer arrays in order to not ruin the sorting of the original array. 
+*/
+// Includes any relavant libraries using standard namespace
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <stdio.h>
+using namespace std;
+
+// Function prototypes.
+void swapIntPtr(int**, int**);
+void ReadIntoDataArray(int[], int&, int&, int, ifstream&, int);
+void sorter(int*[], int);
+void DisplayArray(int list[], unsigned maxElement);
+void DisplayArray(int* pointerList[], unsigned maxElement);
+
+// Main function.
+int main()
+{
+    // Necessary declarations of variables and opening of file. Also creates the array and pointer array
+    ifstream inputFile;
+    int num;
+    inputFile.open("arrayData.txt");
+    int arraySize = 0, counter = 0, disp = 0;
+    int list[10];
+    int *pointerList[10];
+    
+    // Goes through the numbers in the file
+    while(inputFile >> num)
+    {
+        disp = 0;
+        arraySize = 0;
+        counter = 0;
+        arraySize = num;
+
+        // Reads into array
+        ReadIntoDataArray(list, counter, disp, arraySize, inputFile, num);
+        
+        // Assigns the array to the pointer array
+        for (int i = 0; i < counter; i++)
+        {
+            pointerList[i] = &list[i];
+        }
+        
+        // Sorts the pointerList
+        sorter(pointerList, arraySize);
+
+        // Displays the pointerList and the list.
+        DisplayArray(pointerList, disp);
+        DisplayArray(list, disp);
+
+        cout << "Press the enter key once or twice to continue..." << endl; cin.ignore(); cin.get();
+        
+        
+    }
+    cout << "Program Done" << endl;
+}
+
+// Swaps the integer pointers given.
+void swapIntPtr(int** a, int** b)
+{
+    int* temporary;
+    temporary = *a;
+    *a = *b;
+    *b = temporary;
+}
+
+// Reads data into an array given the array, and the filestream
+void ReadIntoDataArray(int list[], int &counter, int &disp, int arraySize, ifstream &inputFile, int num)
+{
+    while (counter < arraySize)
+        {
+            inputFile >> num;
+            list[counter] = num;
+            counter++;
+            disp++;
+        }
+}
+
+// Takes as input the pointer list and sorts it using bubble sort.
+void sorter(int* pointerList[], int arraySize)
+{
+    for (int i = (arraySize-1); i > 0; i--)
+        {
+            for (int k = 0; k <= (i-1); k++)
+            {
+                if (*pointerList[k] > *pointerList[(k+1)])
+                {
+                    swapIntPtr(&pointerList[k+1], &pointerList[k]);
+                }
+            }
+        }
+}
+
+// Displays the array
+void DisplayArray(int list[], unsigned maxElement)
+{
+    cout << "Data Array elements are:" << endl;
+    for (int i = 0; i < maxElement; i++)
+    {
+    cout << left << setw(6) << list[i];
+    }
+    cout << endl;
+
+}
+// Displays the pointerArray
+void DisplayArray(int* pointerList[], unsigned maxElement)
+{
+    cout << "The Pointer Array of sorted pointer elements:" << endl;
+    for (int i = 0; i < maxElement; i++)
+    {
+    cout << setw(6) << left << *pointerList[i];
+    }
+    cout << endl;
+}
